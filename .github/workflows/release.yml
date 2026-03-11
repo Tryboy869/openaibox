@@ -1,0 +1,90 @@
+name: Release & Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CHANGELOG.md'   # Trigger only when CHANGELOG is updated
+
+jobs:
+  release:
+    name: Build, Release & Publish to PyPI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed for gh release create
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build tools
+        run: pip install build twine
+
+      - name: Read version from CHANGELOG
+        id: version
+        run: |
+          VERSION=$(grep -m1 '## \[' CHANGELOG.md | sed 's/## \[//;s/\].*//')
+          PEP=$(echo "$VERSION" | sed 's/-beta/b1/;s/-alpha/a1/;s/-rc\([0-9]*\)/rc\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "pep_version=$PEP" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check tag does not exist
+        id: check_tag
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update version in pyproject.toml
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          sed -i 's/^version.*=.*/version         = "${{ steps.version.outputs.pep_version }}"/' pyproject.toml
+
+      - name: Build
+        if: steps.check_tag.outputs.exists == 'false'
+        run: python -m build
+
+      - name: Extract release notes
+        if: steps.check_tag.outputs.exists == 'false'
+        id: notes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NOTES=$(awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | head -n -1 | tail -n +2)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            dist/*.whl dist/*.tar.gz \
+            --title "GraphRuntime ${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.notes.outputs.notes }}" \
+            --latest
+
+      - name: Publish to PyPI
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: twine upload dist/* --non-interactive
+
+      - name: Summary
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          echo "## Release ${{ steps.version.outputs.tag }} complete 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "- PyPI: https://pypi.org/project/openaibox/" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY

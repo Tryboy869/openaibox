@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200"
+     role="img" aria-labelledby="header-title">
+  <title id="header-title">GraphRuntime — Open AI Box</title>
+  <style>
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textglow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="200" fill="url(#bg)" rx="12"/>
+
+  <!-- Animated grid lines -->
+  <g opacity="0.15">
+    <line x1="150" y1="0" x2="150" y2="200" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="300" y1="0" x2="300" y2="200" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="450" y1="0" x2="450" y2="200" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="200" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="750" y1="0" x2="750" y2="200" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="0" y1="67" x2="900" y2="67" stroke="#58a6ff" stroke-width="0.5"/>
+    <line x1="0" y1="133" x2="900" y2="133" stroke="#58a6ff" stroke-width="0.5"/>
+  </g>
+
+  <!-- Scanning line -->
+  <rect width="900" height="2" fill="url(#lineGrad)" y="100">
+    <animateTransform attributeName="transform" type="translate"
+      from="0,-100" to="0,100" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Nodes -->
+  <g filter="url(#glow)">
+    <!-- Node 1 -->
+    <circle cx="120" cy="100" r="18" fill="none" stroke="#58a6ff" stroke-width="2">
+      <animate attributeName="r" values="18;22;18" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="120" cy="100" r="6" fill="#58a6ff">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="120" y="135" text-anchor="middle" fill="#58a6ff" font-size="10" font-family="monospace">embed</text>
+
+    <!-- Connector 1-2 -->
+    <line x1="140" y1="100" x2="240" y2="100" stroke="#58a6ff" stroke-width="1.5" opacity="0.6" stroke-dasharray="6,3">
+      <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="1s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Node 2 -->
+    <circle cx="260" cy="100" r="18" fill="none" stroke="#3fb950" stroke-width="2">
+      <animate attributeName="r" values="18;22;18" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="260" cy="100" r="6" fill="#3fb950">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="260" y="135" text-anchor="middle" fill="#3fb950" font-size="10" font-family="monospace">layers</text>
+
+    <!-- Connector 2-3 -->
+    <line x1="280" y1="100" x2="380" y2="100" stroke="#3fb950" stroke-width="1.5" opacity="0.6" stroke-dasharray="6,3">
+      <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="1s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Node 3 (Decision) -->
+    <circle cx="400" cy="100" r="24" fill="none" stroke="#f78166" stroke-width="2.5">
+      <animate attributeName="r" values="24;29;24" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="100" r="8" fill="#f78166">
+      <animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <text x="400" y="140" text-anchor="middle" fill="#f78166" font-size="10" font-family="monospace">decision</text>
+    <!-- Pulse ring -->
+    <circle cx="400" cy="100" r="24" fill="none" stroke="#f78166" stroke-width="1" opacity="0">
+      <animate attributeName="r" values="24;45" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Connector 3-4 -->
+    <line x1="426" y1="100" x2="526" y2="100" stroke="#f78166" stroke-width="1.5" opacity="0.6" stroke-dasharray="6,3">
+      <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="1s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Node 4 -->
+    <circle cx="546" cy="100" r="18" fill="none" stroke="#d2a8ff" stroke-width="2">
+      <animate attributeName="r" values="18;22;18" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="546" cy="100" r="6" fill="#d2a8ff">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+    </circle>
+    <text x="546" y="135" text-anchor="middle" fill="#d2a8ff" font-size="10" font-family="monospace">lm_head</text>
+  </g>
+
+  <!-- Title -->
+  <text x="720" y="85" text-anchor="middle" fill="white" font-size="26"
+        font-family="monospace" font-weight="bold" filter="url(#textglow)"
+        letter-spacing="2">GraphRuntime</text>
+  <text x="720" y="112" text-anchor="middle" fill="#58a6ff" font-size="13"
+        font-family="monospace" letter-spacing="1">Open AI Box</text>
+  <text x="720" y="134" text-anchor="middle" fill="#8b949e" font-size="11"
+        font-family="monospace">Understand any LLM.</text>
+
+  <!-- Version badge -->
+  <rect x="648" y="148" width="144" height="22" rx="4" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="720" y="163" text-anchor="middle" fill="#3fb950" font-size="11" font-family="monospace">v1.0.0-beta</text>
+</svg>

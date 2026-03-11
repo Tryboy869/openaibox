@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" width="520" height="120"
+     role="img" aria-labelledby="lock-title">
+  <title id="lock-title">Open AI Box — Unlocking animation</title>
+  <style>
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <defs>
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f78166"/>
+      <stop offset="100%" stop-color="#ff6b35"/>
+    </linearGradient>
+    <linearGradient id="unlockGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3fb950"/>
+      <stop offset="100%" stop-color="#2ea043"/>
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="520" height="120" fill="#0d1117" rx="10"/>
+
+  <!-- LOCK BODY -->
+  <g transform="translate(40, 20)">
+    <!-- Shackle (closed → open) -->
+    <!-- Closed shackle arc -->
+    <path d="M 12,40 L 12,22 A 14,14 0 0 1 40,22 L 40,40"
+          fill="none" stroke="url(#lockGrad)" stroke-width="5"
+          stroke-linecap="round" filter="url(#glow2)">
+      <!-- Phase 1: stay closed (0-1.5s) -->
+      <!-- Phase 2: rotate shackle open (1.5-2.5s) -->
+      <animateTransform attributeName="transform" type="rotate"
+        values="0 26 40; 0 26 40; -40 12 40; -40 12 40; 0 26 40"
+        keyTimes="0; 0.3; 0.5; 0.8; 1"
+        dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="stroke" values="#f78166;#f78166;#3fb950;#3fb950;#f78166"
+        keyTimes="0;0.3;0.5;0.8;1" dur="5s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Lock body rectangle -->
+    <rect x="2" y="40" width="48" height="36" rx="6"
+          fill="url(#lockGrad)" filter="url(#glow2)">
+      <animate attributeName="fill" values="url(#lockGrad);url(#lockGrad);url(#unlockGrad);url(#unlockGrad);url(#lockGrad)"
+        keyTimes="0;0.3;0.5;0.8;1" dur="5s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- Keyhole -->
+    <circle cx="26" cy="54" r="6" fill="#0d1117"/>
+    <rect x="23" y="54" width="6" height="10" rx="2" fill="#0d1117"/>
+
+    <!-- Shine effect on unlock -->
+    <circle cx="26" cy="58" r="20" fill="#3fb950" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.3;0;0" keyTimes="0;0.45;0.5;0.55;1" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;5;30;5;5" keyTimes="0;0.45;0.5;0.55;1" dur="5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- TEXT — appears sequentially -->
+  <!-- "Open" -->
+  <text x="130" y="52" fill="#58a6ff" font-size="22" font-family="monospace"
+        font-weight="bold" opacity="0">
+    Open
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.4;0.5;0.9;1" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- " AI" -->
+  <text x="200" y="52" fill="white" font-size="22" font-family="monospace"
+        font-weight="bold" opacity="0">
+    AI
+    <animate attributeName="opacity" values="0;0;0;1;0" keyTimes="0;0.5;0.55;0.65;1" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="x" values="195;195;195;200;200" keyTimes="0;0.5;0.55;0.65;1" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- " Box" -->
+  <text x="247" y="52" fill="#f78166" font-size="22" font-family="monospace"
+        font-weight="bold" opacity="0">
+    Box
+    <animate attributeName="opacity" values="0;0;0;0;1;1;0" keyTimes="0;0.55;0.6;0.65;0.7;0.9;1" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="130" y="80" fill="#8b949e" font-size="13" font-family="monospace" opacity="0">
+    Understand what happens inside.
+    <animate attributeName="opacity" values="0;0;0;0;0;1;0" keyTimes="0;0.6;0.65;0.7;0.72;0.85;1" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Particles on unlock -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.48;0.52;0.58;1" dur="5s" repeatCount="indefinite"/>
+    <circle cx="100" cy="60" r="2" fill="#3fb950">
+      <animateTransform attributeName="transform" type="translate"
+        values="0,0;-20,-25" dur="0.6s" begin="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="105" cy="55" r="1.5" fill="#58a6ff">
+      <animateTransform attributeName="transform" type="translate"
+        values="0,0;15,-30" dur="0.6s" begin="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="95" cy="58" r="2" fill="#f78166">
+      <animateTransform attributeName="transform" type="translate"
+        values="0,0;-10,-20" dur="0.6s" begin="2.4s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

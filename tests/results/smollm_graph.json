@@ -1,0 +1,8837 @@
+{
+  "openaibox": {
+    "version": "1.0.0b1",
+    "generated": "2026-03-11T08:26:34.937526Z",
+    "model": "HuggingFaceTB/SmolLM-360M",
+    "package_url": "https://github.com/tryboy869/openaibox"
+  },
+  "architecture": {
+    "class": "LlamaForCausalLM",
+    "total_params": 361821120,
+    "num_layers": 32,
+    "hidden_dim": 960,
+    "vocab_size": 49152
+  },
+  "injection_points": [
+    {
+      "name": "input_point",
+      "role": "input",
+      "layer": "model.embed_tokens",
+      "in_shape": [
+        1,
+        2
+      ],
+      "out_shape": [
+        1,
+        2,
+        960
+      ],
+      "description": "Token embeddings — where the prompt enters the model. Each input token is converted to a vector here."
+    },
+    {
+      "name": "memory_point",
+      "role": "memory",
+      "layer": "model.layers.0.self_attn.k_proj",
+      "in_shape": [
+        1,
+        2,
+        960
+      ],
+      "out_shape": [
+        1,
+        2,
+        320
+      ],
+      "description": "Key/Value projection — where the model encodes information for attention. Compressed shape reveals the KV cache ratio."
+    },
+    {
+      "name": "decision_point",
+      "role": "decision",
+      "layer": "model.norm",
+      "in_shape": [
+        1,
+        2,
+        960
+      ],
+      "out_shape": [
+        1,
+        2,
+        960
+      ],
+      "description": "Final normalization — the model's full understanding before deciding which token to output. This is the richest representation of the model's reasoning state."
+    },
+    {
+      "name": "output_point",
+      "role": "output",
+      "layer": "lm_head",
+      "in_shape": [
+        1,
+        2,
+        960
+      ],
+      "out_shape": [
+        1,
+        2,
+        49152
+      ],
+      "description": "Language model head — projects the hidden state to vocabulary logits. The final token probabilities are computed here."
+    }
+  ],
+  "layer_flow": [
+    {
+      "order": 0,
+      "name": "model.embed_tokens",
+      "type": "Embedding",
+      "in": [
+        [
+          1,
+          2
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 47185920
+    },
+    {
+      "order": 1,
+      "name": "model.rotary_emb",
+      "type": "LlamaRotaryEmbedding",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          64
+        ],
+        [
+          1,
+          2,
+          64
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 2,
+      "name": "model.layers.0.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 3,
+      "name": "model.layers.0.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 4,
+      "name": "model.layers.0.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 5,
+      "name": "model.layers.0.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 6,
+      "name": "model.layers.0.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 7,
+      "name": "model.layers.0.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 8,
+      "name": "model.layers.0.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 9,
+      "name": "model.layers.0.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 10,
+      "name": "model.layers.0.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 11,
+      "name": "model.layers.0.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 12,
+      "name": "model.layers.0.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 13,
+      "name": "model.layers.0.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 14,
+      "name": "model.layers.0",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 15,
+      "name": "model.layers.1.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 16,
+      "name": "model.layers.1.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 17,
+      "name": "model.layers.1.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 18,
+      "name": "model.layers.1.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 19,
+      "name": "model.layers.1.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 20,
+      "name": "model.layers.1.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 21,
+      "name": "model.layers.1.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 22,
+      "name": "model.layers.1.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 23,
+      "name": "model.layers.1.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 24,
+      "name": "model.layers.1.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 25,
+      "name": "model.layers.1.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 26,
+      "name": "model.layers.1.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 27,
+      "name": "model.layers.1",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 28,
+      "name": "model.layers.2.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 29,
+      "name": "model.layers.2.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 30,
+      "name": "model.layers.2.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 31,
+      "name": "model.layers.2.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 32,
+      "name": "model.layers.2.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 33,
+      "name": "model.layers.2.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 34,
+      "name": "model.layers.2.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 35,
+      "name": "model.layers.2.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 36,
+      "name": "model.layers.2.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 37,
+      "name": "model.layers.2.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 38,
+      "name": "model.layers.2.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 39,
+      "name": "model.layers.2.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 40,
+      "name": "model.layers.2",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 41,
+      "name": "model.layers.3.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 42,
+      "name": "model.layers.3.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 43,
+      "name": "model.layers.3.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 44,
+      "name": "model.layers.3.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 45,
+      "name": "model.layers.3.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 46,
+      "name": "model.layers.3.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 47,
+      "name": "model.layers.3.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 48,
+      "name": "model.layers.3.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 49,
+      "name": "model.layers.3.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 50,
+      "name": "model.layers.3.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 51,
+      "name": "model.layers.3.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 52,
+      "name": "model.layers.3.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 53,
+      "name": "model.layers.3",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 54,
+      "name": "model.layers.4.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 55,
+      "name": "model.layers.4.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 56,
+      "name": "model.layers.4.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 57,
+      "name": "model.layers.4.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 58,
+      "name": "model.layers.4.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 59,
+      "name": "model.layers.4.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 60,
+      "name": "model.layers.4.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 61,
+      "name": "model.layers.4.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 62,
+      "name": "model.layers.4.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 63,
+      "name": "model.layers.4.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 64,
+      "name": "model.layers.4.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 65,
+      "name": "model.layers.4.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 66,
+      "name": "model.layers.4",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 67,
+      "name": "model.layers.5.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 68,
+      "name": "model.layers.5.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 69,
+      "name": "model.layers.5.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 70,
+      "name": "model.layers.5.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 71,
+      "name": "model.layers.5.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 72,
+      "name": "model.layers.5.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 73,
+      "name": "model.layers.5.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 74,
+      "name": "model.layers.5.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 75,
+      "name": "model.layers.5.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 76,
+      "name": "model.layers.5.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 77,
+      "name": "model.layers.5.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 78,
+      "name": "model.layers.5.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 79,
+      "name": "model.layers.5",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 80,
+      "name": "model.layers.6.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 81,
+      "name": "model.layers.6.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 82,
+      "name": "model.layers.6.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 83,
+      "name": "model.layers.6.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 84,
+      "name": "model.layers.6.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 85,
+      "name": "model.layers.6.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 86,
+      "name": "model.layers.6.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 87,
+      "name": "model.layers.6.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 88,
+      "name": "model.layers.6.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 89,
+      "name": "model.layers.6.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 90,
+      "name": "model.layers.6.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 91,
+      "name": "model.layers.6.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 92,
+      "name": "model.layers.6",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 93,
+      "name": "model.layers.7.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 94,
+      "name": "model.layers.7.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 95,
+      "name": "model.layers.7.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 96,
+      "name": "model.layers.7.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 97,
+      "name": "model.layers.7.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 98,
+      "name": "model.layers.7.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 99,
+      "name": "model.layers.7.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 100,
+      "name": "model.layers.7.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 101,
+      "name": "model.layers.7.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 102,
+      "name": "model.layers.7.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 103,
+      "name": "model.layers.7.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 104,
+      "name": "model.layers.7.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 105,
+      "name": "model.layers.7",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 106,
+      "name": "model.layers.8.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 107,
+      "name": "model.layers.8.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 108,
+      "name": "model.layers.8.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 109,
+      "name": "model.layers.8.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 110,
+      "name": "model.layers.8.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 111,
+      "name": "model.layers.8.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 112,
+      "name": "model.layers.8.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 113,
+      "name": "model.layers.8.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 114,
+      "name": "model.layers.8.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 115,
+      "name": "model.layers.8.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 116,
+      "name": "model.layers.8.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 117,
+      "name": "model.layers.8.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 118,
+      "name": "model.layers.8",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 119,
+      "name": "model.layers.9.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 120,
+      "name": "model.layers.9.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 121,
+      "name": "model.layers.9.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 122,
+      "name": "model.layers.9.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 123,
+      "name": "model.layers.9.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 124,
+      "name": "model.layers.9.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 125,
+      "name": "model.layers.9.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 126,
+      "name": "model.layers.9.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 127,
+      "name": "model.layers.9.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 128,
+      "name": "model.layers.9.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 129,
+      "name": "model.layers.9.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 130,
+      "name": "model.layers.9.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 131,
+      "name": "model.layers.9",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 132,
+      "name": "model.layers.10.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 133,
+      "name": "model.layers.10.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 134,
+      "name": "model.layers.10.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 135,
+      "name": "model.layers.10.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 136,
+      "name": "model.layers.10.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 137,
+      "name": "model.layers.10.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 138,
+      "name": "model.layers.10.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 139,
+      "name": "model.layers.10.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 140,
+      "name": "model.layers.10.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 141,
+      "name": "model.layers.10.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 142,
+      "name": "model.layers.10.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 143,
+      "name": "model.layers.10.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 144,
+      "name": "model.layers.10",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 145,
+      "name": "model.layers.11.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 146,
+      "name": "model.layers.11.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 147,
+      "name": "model.layers.11.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 148,
+      "name": "model.layers.11.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 149,
+      "name": "model.layers.11.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 150,
+      "name": "model.layers.11.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 151,
+      "name": "model.layers.11.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 152,
+      "name": "model.layers.11.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 153,
+      "name": "model.layers.11.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 154,
+      "name": "model.layers.11.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 155,
+      "name": "model.layers.11.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 156,
+      "name": "model.layers.11.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 157,
+      "name": "model.layers.11",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 158,
+      "name": "model.layers.12.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 159,
+      "name": "model.layers.12.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 160,
+      "name": "model.layers.12.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 161,
+      "name": "model.layers.12.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 162,
+      "name": "model.layers.12.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 163,
+      "name": "model.layers.12.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 164,
+      "name": "model.layers.12.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 165,
+      "name": "model.layers.12.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 166,
+      "name": "model.layers.12.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 167,
+      "name": "model.layers.12.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 168,
+      "name": "model.layers.12.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 169,
+      "name": "model.layers.12.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 170,
+      "name": "model.layers.12",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 171,
+      "name": "model.layers.13.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 172,
+      "name": "model.layers.13.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 173,
+      "name": "model.layers.13.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 174,
+      "name": "model.layers.13.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 175,
+      "name": "model.layers.13.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 176,
+      "name": "model.layers.13.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 177,
+      "name": "model.layers.13.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 178,
+      "name": "model.layers.13.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 179,
+      "name": "model.layers.13.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 180,
+      "name": "model.layers.13.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 181,
+      "name": "model.layers.13.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 182,
+      "name": "model.layers.13.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 183,
+      "name": "model.layers.13",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 184,
+      "name": "model.layers.14.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 185,
+      "name": "model.layers.14.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 186,
+      "name": "model.layers.14.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 187,
+      "name": "model.layers.14.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 188,
+      "name": "model.layers.14.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 189,
+      "name": "model.layers.14.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 190,
+      "name": "model.layers.14.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 191,
+      "name": "model.layers.14.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 192,
+      "name": "model.layers.14.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 193,
+      "name": "model.layers.14.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 194,
+      "name": "model.layers.14.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 195,
+      "name": "model.layers.14.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 196,
+      "name": "model.layers.14",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 197,
+      "name": "model.layers.15.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 198,
+      "name": "model.layers.15.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 199,
+      "name": "model.layers.15.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 200,
+      "name": "model.layers.15.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 201,
+      "name": "model.layers.15.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 202,
+      "name": "model.layers.15.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 203,
+      "name": "model.layers.15.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 204,
+      "name": "model.layers.15.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 205,
+      "name": "model.layers.15.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 206,
+      "name": "model.layers.15.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 207,
+      "name": "model.layers.15.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 208,
+      "name": "model.layers.15.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 209,
+      "name": "model.layers.15",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 210,
+      "name": "model.layers.16.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 211,
+      "name": "model.layers.16.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 212,
+      "name": "model.layers.16.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 213,
+      "name": "model.layers.16.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 214,
+      "name": "model.layers.16.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 215,
+      "name": "model.layers.16.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 216,
+      "name": "model.layers.16.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 217,
+      "name": "model.layers.16.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 218,
+      "name": "model.layers.16.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 219,
+      "name": "model.layers.16.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 220,
+      "name": "model.layers.16.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 221,
+      "name": "model.layers.16.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 222,
+      "name": "model.layers.16",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 223,
+      "name": "model.layers.17.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 224,
+      "name": "model.layers.17.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 225,
+      "name": "model.layers.17.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 226,
+      "name": "model.layers.17.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 227,
+      "name": "model.layers.17.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 228,
+      "name": "model.layers.17.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 229,
+      "name": "model.layers.17.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 230,
+      "name": "model.layers.17.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 231,
+      "name": "model.layers.17.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 232,
+      "name": "model.layers.17.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 233,
+      "name": "model.layers.17.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 234,
+      "name": "model.layers.17.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 235,
+      "name": "model.layers.17",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 236,
+      "name": "model.layers.18.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 237,
+      "name": "model.layers.18.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 238,
+      "name": "model.layers.18.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 239,
+      "name": "model.layers.18.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 240,
+      "name": "model.layers.18.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 241,
+      "name": "model.layers.18.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 242,
+      "name": "model.layers.18.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 243,
+      "name": "model.layers.18.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 244,
+      "name": "model.layers.18.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 245,
+      "name": "model.layers.18.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 246,
+      "name": "model.layers.18.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 247,
+      "name": "model.layers.18.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 248,
+      "name": "model.layers.18",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 249,
+      "name": "model.layers.19.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 250,
+      "name": "model.layers.19.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 251,
+      "name": "model.layers.19.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 252,
+      "name": "model.layers.19.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 253,
+      "name": "model.layers.19.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 254,
+      "name": "model.layers.19.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 255,
+      "name": "model.layers.19.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 256,
+      "name": "model.layers.19.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 257,
+      "name": "model.layers.19.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 258,
+      "name": "model.layers.19.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 259,
+      "name": "model.layers.19.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 260,
+      "name": "model.layers.19.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 261,
+      "name": "model.layers.19",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 262,
+      "name": "model.layers.20.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 263,
+      "name": "model.layers.20.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 264,
+      "name": "model.layers.20.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 265,
+      "name": "model.layers.20.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 266,
+      "name": "model.layers.20.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 267,
+      "name": "model.layers.20.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 268,
+      "name": "model.layers.20.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 269,
+      "name": "model.layers.20.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 270,
+      "name": "model.layers.20.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 271,
+      "name": "model.layers.20.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 272,
+      "name": "model.layers.20.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 273,
+      "name": "model.layers.20.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 274,
+      "name": "model.layers.20",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 275,
+      "name": "model.layers.21.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 276,
+      "name": "model.layers.21.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 277,
+      "name": "model.layers.21.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 278,
+      "name": "model.layers.21.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 279,
+      "name": "model.layers.21.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 280,
+      "name": "model.layers.21.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 281,
+      "name": "model.layers.21.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 282,
+      "name": "model.layers.21.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 283,
+      "name": "model.layers.21.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 284,
+      "name": "model.layers.21.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 285,
+      "name": "model.layers.21.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 286,
+      "name": "model.layers.21.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 287,
+      "name": "model.layers.21",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 288,
+      "name": "model.layers.22.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 289,
+      "name": "model.layers.22.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 290,
+      "name": "model.layers.22.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 291,
+      "name": "model.layers.22.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 292,
+      "name": "model.layers.22.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 293,
+      "name": "model.layers.22.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 294,
+      "name": "model.layers.22.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 295,
+      "name": "model.layers.22.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 296,
+      "name": "model.layers.22.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 297,
+      "name": "model.layers.22.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 298,
+      "name": "model.layers.22.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 299,
+      "name": "model.layers.22.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 300,
+      "name": "model.layers.22",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 301,
+      "name": "model.layers.23.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 302,
+      "name": "model.layers.23.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 303,
+      "name": "model.layers.23.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 304,
+      "name": "model.layers.23.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 305,
+      "name": "model.layers.23.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 306,
+      "name": "model.layers.23.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 307,
+      "name": "model.layers.23.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 308,
+      "name": "model.layers.23.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 309,
+      "name": "model.layers.23.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 310,
+      "name": "model.layers.23.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 311,
+      "name": "model.layers.23.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 312,
+      "name": "model.layers.23.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 313,
+      "name": "model.layers.23",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 314,
+      "name": "model.layers.24.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 315,
+      "name": "model.layers.24.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 316,
+      "name": "model.layers.24.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 317,
+      "name": "model.layers.24.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 318,
+      "name": "model.layers.24.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 319,
+      "name": "model.layers.24.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 320,
+      "name": "model.layers.24.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 321,
+      "name": "model.layers.24.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 322,
+      "name": "model.layers.24.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 323,
+      "name": "model.layers.24.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 324,
+      "name": "model.layers.24.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 325,
+      "name": "model.layers.24.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 326,
+      "name": "model.layers.24",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 327,
+      "name": "model.layers.25.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 328,
+      "name": "model.layers.25.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 329,
+      "name": "model.layers.25.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 330,
+      "name": "model.layers.25.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 331,
+      "name": "model.layers.25.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 332,
+      "name": "model.layers.25.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 333,
+      "name": "model.layers.25.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 334,
+      "name": "model.layers.25.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 335,
+      "name": "model.layers.25.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 336,
+      "name": "model.layers.25.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 337,
+      "name": "model.layers.25.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 338,
+      "name": "model.layers.25.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 339,
+      "name": "model.layers.25",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 340,
+      "name": "model.layers.26.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 341,
+      "name": "model.layers.26.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 342,
+      "name": "model.layers.26.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 343,
+      "name": "model.layers.26.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 344,
+      "name": "model.layers.26.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 345,
+      "name": "model.layers.26.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 346,
+      "name": "model.layers.26.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 347,
+      "name": "model.layers.26.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 348,
+      "name": "model.layers.26.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 349,
+      "name": "model.layers.26.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 350,
+      "name": "model.layers.26.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 351,
+      "name": "model.layers.26.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 352,
+      "name": "model.layers.26",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 353,
+      "name": "model.layers.27.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 354,
+      "name": "model.layers.27.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 355,
+      "name": "model.layers.27.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 356,
+      "name": "model.layers.27.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 357,
+      "name": "model.layers.27.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 358,
+      "name": "model.layers.27.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 359,
+      "name": "model.layers.27.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 360,
+      "name": "model.layers.27.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 361,
+      "name": "model.layers.27.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 362,
+      "name": "model.layers.27.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 363,
+      "name": "model.layers.27.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 364,
+      "name": "model.layers.27.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 365,
+      "name": "model.layers.27",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 366,
+      "name": "model.layers.28.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 367,
+      "name": "model.layers.28.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 368,
+      "name": "model.layers.28.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 369,
+      "name": "model.layers.28.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 370,
+      "name": "model.layers.28.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 371,
+      "name": "model.layers.28.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 372,
+      "name": "model.layers.28.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 373,
+      "name": "model.layers.28.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 374,
+      "name": "model.layers.28.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 375,
+      "name": "model.layers.28.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 376,
+      "name": "model.layers.28.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 377,
+      "name": "model.layers.28.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 378,
+      "name": "model.layers.28",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 379,
+      "name": "model.layers.29.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 380,
+      "name": "model.layers.29.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 381,
+      "name": "model.layers.29.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 382,
+      "name": "model.layers.29.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 383,
+      "name": "model.layers.29.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 384,
+      "name": "model.layers.29.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 385,
+      "name": "model.layers.29.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 386,
+      "name": "model.layers.29.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 387,
+      "name": "model.layers.29.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 388,
+      "name": "model.layers.29.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 389,
+      "name": "model.layers.29.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 390,
+      "name": "model.layers.29.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 391,
+      "name": "model.layers.29",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 392,
+      "name": "model.layers.30.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 393,
+      "name": "model.layers.30.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 394,
+      "name": "model.layers.30.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 395,
+      "name": "model.layers.30.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 396,
+      "name": "model.layers.30.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 397,
+      "name": "model.layers.30.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 398,
+      "name": "model.layers.30.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 399,
+      "name": "model.layers.30.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 400,
+      "name": "model.layers.30.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 401,
+      "name": "model.layers.30.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 402,
+      "name": "model.layers.30.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 403,
+      "name": "model.layers.30.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 404,
+      "name": "model.layers.30",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 405,
+      "name": "model.layers.31.input_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 406,
+      "name": "model.layers.31.self_attn.q_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 407,
+      "name": "model.layers.31.self_attn.k_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 408,
+      "name": "model.layers.31.self_attn.v_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          320
+        ]
+      ],
+      "params": 307200
+    },
+    {
+      "order": 409,
+      "name": "model.layers.31.self_attn.o_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 921600
+    },
+    {
+      "order": 410,
+      "name": "model.layers.31.self_attn",
+      "type": "LlamaAttention",
+      "in": [],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 411,
+      "name": "model.layers.31.post_attention_layernorm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 412,
+      "name": "model.layers.31.mlp.gate_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 413,
+      "name": "model.layers.31.mlp.act_fn",
+      "type": "SiLUActivation",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 0
+    },
+    {
+      "order": 414,
+      "name": "model.layers.31.mlp.up_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 415,
+      "name": "model.layers.31.mlp.down_proj",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          2560
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 2457600
+    },
+    {
+      "order": 416,
+      "name": "model.layers.31.mlp",
+      "type": "LlamaMLP",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 7372800
+    },
+    {
+      "order": 417,
+      "name": "model.layers.31",
+      "type": "LlamaDecoderLayer",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 9832320
+    },
+    {
+      "order": 418,
+      "name": "model.norm",
+      "type": "LlamaRMSNorm",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "params": 960
+    },
+    {
+      "order": 419,
+      "name": "model",
+      "type": "LlamaModel",
+      "in": [],
+      "out": [],
+      "params": 361821120
+    },
+    {
+      "order": 420,
+      "name": "lm_head",
+      "type": "Linear",
+      "in": [
+        [
+          1,
+          2,
+          960
+        ]
+      ],
+      "out": [
+        [
+          1,
+          2,
+          49152
+        ]
+      ],
+      "params": 47185920
+    }
+  ],
+  "dimension_map": {
+    "hidden_dim": 960,
+    "contrast_groups": {
+      "syntax_semantics": {
+        "question": "Which dimensions detect semantic absurdity?",
+        "cos_similarity": 0.6451,
+        "separability": "VERY_SEPARABLE",
+        "mean_diff": 0.3606,
+        "top_dimensions": [
+          696,
+          792,
+          766,
+          798,
+          450,
+          200,
+          544,
+          801,
+          153,
+          955
+        ]
+      },
+      "causality": {
+        "question": "Which dimensions carry causality?",
+        "cos_similarity": 0.9511,
+        "separability": "SEPARABLE",
+        "mean_diff": 0.172,
+        "top_dimensions": [
+          696,
+          792,
+          801,
+          200,
+          655,
+          351,
+          895,
+          544,
+          955,
+          51
+        ]
+      },
+      "certainty": {
+        "question": "Which dimensions carry certainty?",
+        "cos_similarity": 0.9871,
+        "separability": "LOW_SEPARABILITY",
+        "mean_diff": 0.1017,
+        "top_dimensions": [
+          801,
+          655,
+          674,
+          544,
+          696,
+          792,
+          474,
+          710,
+          955,
+          697
+        ]
+      },
+      "concrete_abstract": {
+        "question": "Which dimensions carry abstraction?",
+        "cos_similarity": 0.7766,
+        "separability": "VERY_SEPARABLE",
+        "mean_diff": 0.3426,
+        "top_dimensions": [
+          200,
+          798,
+          671,
+          544,
+          232,
+          696,
+          792,
+          766,
+          450,
+          655
+        ]
+      },
+      "temporality": {
+        "question": "Which dimensions carry temporality?",
+        "cos_similarity": 0.9918,
+        "separability": "LOW_SEPARABILITY",
+        "mean_diff": 0.0922,
+        "top_dimensions": [
+          351,
+          696,
+          766,
+          450,
+          153,
+          348,
+          895,
+          671,
+          544,
+          290
+        ]
+      },
+      "emotion": {
+        "question": "Which dimensions carry emotion?",
+        "cos_similarity": 0.8624,
+        "separability": "VERY_SEPARABLE",
+        "mean_diff": 0.3168,
+        "top_dimensions": [
+          544,
+          766,
+          696,
+          450,
+          798,
+          671,
+          655,
+          674,
+          792,
+          351
+        ]
+      }
+    },
+    "top_dimensions": [
+      {
+        "index": 696,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 1.0,
+        "description": "Multi-role regulator (6 categories)"
+      },
+      {
+        "index": 544,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.7368,
+        "description": "Multi-role regulator (6 categories)"
+      },
+      {
+        "index": 792,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.7193,
+        "description": "Multi-role regulator (5 categories)"
+      },
+      {
+        "index": 766,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.5964,
+        "description": "Multi-role regulator (6 categories)"
+      },
+      {
+        "index": 801,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.5784,
+        "description": "Multi-role regulator (6 categories)"
+      },
+      {
+        "index": 200,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.469,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 798,
+        "roles": [
+          "syntax_semantics",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.4406,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 450,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.4401,
+        "description": "Multi-role regulator (5 categories)"
+      },
+      {
+        "index": 655,
+        "roles": [
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.4147,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 351,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.4139,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 671,
+        "roles": [
+          "syntax_semantics",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.3741,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 674,
+        "roles": [
+          "syntax_semantics",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.3624,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 955,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.3055,
+        "description": "Multi-role regulator (5 categories)"
+      },
+      {
+        "index": 348,
+        "roles": [
+          "syntax_semantics",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2909,
+        "description": "Multi-role regulator (3 categories)"
+      },
+      {
+        "index": 895,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2571,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 153,
+        "roles": [
+          "syntax_semantics",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.2519,
+        "description": "Multi-role regulator (3 categories)"
+      },
+      {
+        "index": 232,
+        "roles": [
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2499,
+        "description": "Multi-role regulator (4 categories)"
+      },
+      {
+        "index": 290,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2294,
+        "description": "Multi-role regulator (5 categories)"
+      },
+      {
+        "index": 295,
+        "roles": [
+          "causality",
+          "temporality"
+        ],
+        "score": 0.1791,
+        "description": "Multi-role regulator (2 categories)"
+      },
+      {
+        "index": 474,
+        "roles": [
+          "syntax_semantics",
+          "certainty"
+        ],
+        "score": 0.1761,
+        "description": "Multi-role regulator (2 categories)"
+      }
+    ],
+    "multi_role_dimensions": [
+      {
+        "index": 696,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 1.0
+      },
+      {
+        "index": 766,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.5964
+      },
+      {
+        "index": 544,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.7368
+      },
+      {
+        "index": 801,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.5784
+      },
+      {
+        "index": 792,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.7193
+      },
+      {
+        "index": 450,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.4401
+      },
+      {
+        "index": 955,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.3055
+      },
+      {
+        "index": 290,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2294
+      },
+      {
+        "index": 798,
+        "roles": [
+          "syntax_semantics",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.4406
+      },
+      {
+        "index": 200,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.469
+      },
+      {
+        "index": 895,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "concrete_abstract",
+          "temporality"
+        ],
+        "score": 0.2571
+      },
+      {
+        "index": 671,
+        "roles": [
+          "syntax_semantics",
+          "concrete_abstract",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.3741
+      },
+      {
+        "index": 674,
+        "roles": [
+          "syntax_semantics",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.3624
+      },
+      {
+        "index": 351,
+        "roles": [
+          "syntax_semantics",
+          "causality",
+          "temporality",
+          "emotion"
+        ],
+        "score": 0.4139
+      },
+      {
+        "index": 655,
+        "roles": [
+          "causality",
+          "certainty",
+          "concrete_abstract",
+          "emotion"
+        ],
+        "score": 0.4147
+      }
+    ],
+    "specialist_dimensions": {
+      "syntax_semantics": [
+        540
+      ],
+      "causality": [
+        510,
+        882
+      ],
+      "certainty": [
+        710,
+        32,
+        545,
+        702,
+        683
+      ],
+      "concrete_abstract": [
+        753,
+        582
+      ],
+      "temporality": [
+        950,
+        488,
+        855,
+        262
+      ],
+      "emotion": [
+        691,
+        594
+      ]
+    }
+  }
+}
