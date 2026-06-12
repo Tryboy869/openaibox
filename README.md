@@ -12,7 +12,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-3fb950?style=flat-square)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8%2B-d2a8ff?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Status](https://img.shields.io/badge/status-beta-f78166?style=flat-square)]()
-[![HuggingFace](https://img.shields.io/badge/HuggingFace-compatible-ffd21e?style=flat-square&logo=huggingface&logoColor=black)](https://huggingface.co)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-compatible-ffd21e?style=flat-square&logo=huggingface&logoColor=black)](https://huggingface.co/spaces/anzizdaouda0/openaibox)
 
 **Universal LLM Introspection. Any model. Any architecture. Any provider.**
 
